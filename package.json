@@ -1,0 +1,38 @@
+{
+  "name": "nextjs",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@mozilla/readability": "^0.5.0",
+    "@vercel/kv": "^1.0.1",
+    "@vercel/og": "^0.6.2",
+    "is-url": "^1.2.4",
+    "jsdom": "^24.0.0",
+    "next": "14.1.0",
+    "react": "^18",
+    "react-dom": "^18",
+    "satori": "^0.10.13",
+    "uuid": "^9.0.1",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/is-url": "^1.2.32",
+    "@types/jsdom": "^21.1.6",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/uuid": "^9.0.8",
+    "autoprefixer": "^10.0.1",
+    "eslint": "^8",
+    "eslint-config-next": "14.1.0",
+    "postcss": "^8",
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5"
+  }
+}
