@@ -62,10 +62,14 @@ export async function generateTextImage(text: string) {
 }
 
 export async function generatePostImage(data: any) {
-  const image = data?.twitterImage || data?.ogImage;
+  let image = data?.twitterImage || data?.ogImage || "";
   // const image = "";
   const title = data?.ogTitle || data?.title;
   const byLine = data?.byline;
+
+  if (image.endsWith(".webp")) {
+    image = "";
+  }
 
   const res = new ImageResponse(
     (
