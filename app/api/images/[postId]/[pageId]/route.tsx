@@ -4,10 +4,12 @@ import {
   generateTextImage,
   getAvaliablePages,
   getPageText,
-} from "@/app/reader";
+} from "./utils";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+// export const dynamic = "force-dynamic";
+// export const revalidate = 0;
+
+export const runtime = "edge";
 
 export async function GET(
   request: NextRequest,
