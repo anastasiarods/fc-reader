@@ -41,6 +41,24 @@ export async function POST(
       });
     }
 
+    if (buttonIndex === 1 && pageIndex === 0) {
+      return new Response("Redirecting", {
+        status: 302,
+        headers: {
+          Location: BASE_URL,
+        },
+      });
+    }
+
+    if (buttonIndex === 2) {
+      return new Response("Redirecting", {
+        status: 302,
+        headers: {
+          Location: ogUrl as string,
+        },
+      });
+    }
+
     const pages = await getAvaliablePages(params.postId);
     const nextIndex = getNextIndex(pageIndex, pages, buttonIndex);
     const imageUrl = `${BASE_URL}/api/images/${params.postId}/${nextIndex}`;
