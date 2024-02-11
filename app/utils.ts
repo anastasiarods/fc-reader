@@ -3,55 +3,50 @@ import { JSDOM } from "jsdom";
 export interface fcButton {
   label: string;
   action?: string;
+  target?: string;
 }
 
-export function generateFrameMetadata(
+export function getFrameHtml(
   buttons: fcButton[],
   imageUrl: String,
   postUrl: String
 ) {
-  let metadata = `<!DOCTYPE html><html><head>
+  let html = `<!DOCTYPE html>
+  <html>
+    <head>
       <title>Farcaster</title>
-      <meta property="og:image" content="${imageUrl}" />
-      <meta property="fc:frame" content="vNext" />
-      <meta property="fc:frame:image" content="${imageUrl}" />`;
-  buttons.forEach((button, index) => {
-    metadata += `<meta property="fc:frame:button:${index + 1}" content="${
-      button.label
-    }" />`;
-
-    if (button.action) {
-      metadata += `<meta property="fc:frame:button:${
-        index + 1
-      }:action" content="${button.action}" />`;
-    }
-  });
-  metadata += `<meta property="fc:frame:post_url" content="${postUrl}" />
-    </head></html>`;
-  return metadata;
+      ${getFrameHtmlHead(buttons, imageUrl, postUrl)}
+    </head>
+  </html>`;
+  return html;
 }
 
-export function generateFrameObjMetadata(
+export function getFrameHtmlHead(
   buttons: fcButton[],
-  image: string,
-  post_url: string
-) {
-  const metadata: Record<string, string> = {
-    "fc:frame": "vNext",
-  };
-  metadata["fc:frame:image"] = image;
-  if (buttons) {
-    buttons.forEach((button, index) => {
-      metadata[`fc:frame:button:${index + 1}`] = button.label;
-      if (button.action) {
-        metadata[`fc:frame:button:${index + 1}:action`] = button.action;
-      }
-    });
-  }
-  if (post_url) {
-    metadata["fc:frame:post_url"] = post_url;
-  }
-  return metadata;
+  imageUrl: String,
+  postUrl: String
+): string {
+  const tags = [
+    `<meta name="og:image" content="${imageUrl}"/>`,
+    `<meta name="fc:frame" content="vNext"/>`,
+    `<meta name="fc:frame:image" content="${imageUrl}"/>`,
+    `<meta name="fc:frame:post_url" content="${postUrl}"/>`,
+    ...(buttons?.flatMap((button, index) => [
+      `<meta name="fc:frame:button:${index + 1}" content="${button.label}"/>`,
+      button.action
+        ? `<meta name="fc:frame:button:${index + 1}:action" content="${
+            button.action
+          }"/>`
+        : "",
+      button.target
+        ? `<meta name="fc:frame:button:${index + 1}:target" content="${
+            button.target
+          }"/>`
+        : "",
+    ]) ?? []),
+  ];
+
+  return tags.join("");
 }
 
 export function getMetaTags(doc: JSDOM){

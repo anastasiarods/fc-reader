@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAvaliablePages, getPostUrl } from "@/app/reader";
 import { BASE_URL, readButtons, startButtons } from "@/app/constants";
-import { generateFrameMetadata } from "@/app/utils";
+import { getFrameHtml } from "@/app/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +10,7 @@ function getNextIndex(pageIndex: number, pages: number[], buttonIndex: number) {
   if (pageIndex === 0 && pages.length > 1) {
     return 1;
   }
-  
+
   //the last page case
   if (pageIndex > 0 && pageIndex + 1 === pages.length) {
     return pageIndex - 1;
@@ -32,30 +32,12 @@ export async function POST(
     const resJson = await request.json();
     const pageIndex = Number(params.pageId);
     const buttonIndex = resJson.untrustedData.buttonIndex;
-    const originalUrl = await getPostUrl(params.postId);
+    const ogUrl = await getPostUrl(params.postId);
 
-    if (!originalUrl) {
+    if (!ogUrl) {
       console.error("Post not found");
       return new Response("Post not found", {
         status: 400,
-      });
-    }
-
-    if (buttonIndex === 1 && pageIndex === 0) {
-      return new Response("Redirecting", {
-        status: 302,
-        headers: {
-          Location: BASE_URL,
-        },
-      });
-    }
-
-    if (buttonIndex === 2) {
-      return new Response("Redirecting", {
-        status: 302,
-        headers: {
-          Location: originalUrl as string,
-        },
       });
     }
 
@@ -66,7 +48,9 @@ export async function POST(
 
     const postUrl = `${BASE_URL}/api/reader/${params.postId}/${nextIndex}`;
 
-    let buttons = readButtons;
+    let buttons = readButtons.map((e) =>
+      e.label === "Read Online" ? { ...e, target: ogUrl as string } : e
+    );
 
     //hide the next button if there is no next page
     if (!hasNext) buttons = buttons.slice(0, 2);
@@ -76,7 +60,7 @@ export async function POST(
       buttons = startButtons;
     }
 
-    const metadata = generateFrameMetadata(buttons, imageUrl, postUrl);
+    const metadata = getFrameHtml(buttons, imageUrl, postUrl);
 
     return new NextResponse(metadata, {
       status: 200,
