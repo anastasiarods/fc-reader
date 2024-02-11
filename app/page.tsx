@@ -107,7 +107,11 @@ export default function Home() {
 
         <div className="px-4">
           {state.error && (
-            <div className="text-red-500 px-4">{state.error}</div>
+            <div className="text-red-500 px-4">
+              {
+                "Oops! This link can't be parsed. Please consider trying a link from a different source."
+              }
+            </div>
           )}
 
           {state.result && <LinkButton text={state.result} />}

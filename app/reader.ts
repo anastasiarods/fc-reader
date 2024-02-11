@@ -19,12 +19,22 @@ const schema = z.object({
 
 export async function getArticle(url: string) {
   const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch the page");
+  }
+
   const html = await response.text();
-  const doc = new JSDOM(html);
+  const doc = new JSDOM(html, { url });
   const tags = getMetaTags(doc);
 
   const reader = new Readability(doc.window.document);
   const article = reader.parse();
+
+  if (!article) {
+    throw new Error("Failed to parse the page");
+  }
+
   return {
     content: article,
     tags: tags,
