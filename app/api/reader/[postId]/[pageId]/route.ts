@@ -75,7 +75,11 @@ export async function POST(
 
     //show the startting frame buttons
     if (pageIndex === 1 && buttonIndex === 1) {
-      buttons = startButtons;
+      buttons = ogUrl
+        ? startButtons.map((e) =>
+            e.label === "Read Online" ? { ...e, target: ogUrl as string } : e
+          )
+        : [];
     }
 
     const metadata = getFrameHtml(buttons, imageUrl, postUrl);
