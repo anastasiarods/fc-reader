@@ -117,7 +117,7 @@ export default function Home() {
           {state.result && <LinkButton text={state.result} />}
         </div>
       </div>
-      <div className="container flex justify-center py-4 flex-row items-center space-y-0 md:h-16">
+      <div className="container flex justify-center py-4 flex-row items-center space-y-0 md:h-16 gap-8">
         <a
           href="https://warpcast.com/nastya"
           target="_blank"
@@ -125,6 +125,14 @@ export default function Home() {
           className="text-lg font-semibold underline"
         >
           Contact me on Farcaster
+        </a>
+        <a
+          href="https://github.com/anastasiarods/fc-reader"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-lg font-semibold underline"
+        >
+          GitHub
         </a>
       </div>
     </main>
