@@ -86,8 +86,8 @@ export default function Home() {
   const [state, formAction] = useFormState(createPost, initialState);
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-24">
-      <div className="space-y-3 w-2/3 max-w-2xl">
+    <main className="flex min-h-screen flex-col items-center px-24 pt-24">
+      <div className="space-y-3 w-2/3 max-w-2xl flex-1 flex flex-col gap-8 items-center">
         <h1 className="text-3xl font-bold">
           Share readable link at Farcaster as a frame
         </h1>
@@ -116,6 +116,16 @@ export default function Home() {
 
           {state.result && <LinkButton text={state.result} />}
         </div>
+      </div>
+      <div className="container flex justify-center py-4 flex-row items-center space-y-0 md:h-16">
+        <a
+          href="https://warpcast.com/nastya"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-lg font-semibold underline"
+        >
+          Contact me on Farcaster
+        </a>
       </div>
     </main>
   );
