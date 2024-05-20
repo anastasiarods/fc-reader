@@ -16,6 +16,11 @@ export async function GET(
   { params }: { params: { postId: string; pageId: string } }
 ) {
   try {
+
+    if (params.pageId === "test") {
+      return  await generateTextImage("Article was successfully minted as an NFT!");
+    } 
+
     const pageNumber = parseInt(params.pageId);
     const availablePages = await getAvaliablePages(params.postId);
 

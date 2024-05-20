@@ -1,4 +1,4 @@
-"use server";
+'use server'
 
 import { Readability } from "@mozilla/readability";
 import { JSDOM } from "jsdom";
@@ -15,6 +15,7 @@ import {
 
 const schema = z.object({
   url: z.string().url(),
+  mintable: z.boolean().optional(),
 });
 
 export async function getArticle(url: string) {
@@ -85,6 +86,7 @@ export async function createPost(prevState: any, formData: FormData) {
 
     const validatedFields = schema.safeParse({
       url: formData.get("url"),
+      mintable: formData.get("mintable") === "on" ? true : false,
     });
 
     // Return early if the form data is invalid

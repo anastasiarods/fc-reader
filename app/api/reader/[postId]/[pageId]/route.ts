@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAvaliablePages, getPostUrl } from "@/app/reader";
 import { BASE_URL, readButtons, startButtons } from "@/app/constants";
 import { getFrameHtml } from "@/app/utils";
+import { claimNFT } from "@/app/lib/thirdweb";
 
 export const dynamic = "force-dynamic";
 
@@ -41,11 +42,38 @@ export async function POST(
       });
     }
 
+    //mint button
     if (buttonIndex === 1 && pageIndex === 0) {
-      return new Response("Redirecting", {
-        status: 302,
+      const fid = resJson.untrustedData.fid;
+
+      const options = {
+        method: "GET",
+        headers: { accept: "application/json", api_key: "NEYNAR_FROG_FM" },
+      };
+      const address = await fetch(
+        "https://api.neynar.com/v2/farcaster/user/bulk?fids=" + fid,
+        options
+      );
+
+      const data = await address.json();
+
+      const userAddress = data.users[0].verified_addresses.eth_addresses[0];
+
+      const imageUrl = `https://fc-reader.vercel.app/api/images/${params.postId}/0.png`;
+
+      const img = `${BASE_URL}/api/images/${params.postId}/test`;
+      const postUrl = `${BASE_URL}/api/reader/${params.postId}/${0}`;
+      const b = ogUrl
+        ? startButtons.map((e) =>
+            e.label === "Read Online" ? { ...e, target: ogUrl as string } : e
+          )
+        : [];
+      const metadata = getFrameHtml(b, img, postUrl);
+      claimNFT(userAddress, ogUrl as string, imageUrl);
+      return new NextResponse(metadata, {
+        status: 200,
         headers: {
-          Location: BASE_URL,
+          "Content-Type": "text/html",
         },
       });
     }

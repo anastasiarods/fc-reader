@@ -1,5 +1,5 @@
+//@ts-nocheck
 "use client";
-
 import { useState } from "react";
 import { createPost } from "./reader";
 // @ts-ignore
@@ -70,7 +70,6 @@ const LinkButton: React.FC<{ text: string }> = ({ text }) => {
 function SubmitButton() {
   const { pending } = useFormStatus();
 
-  console.log("pending", pending);
   return (
     <button
       type="submit"
@@ -103,6 +102,12 @@ export default function Home() {
             className="bg-transparent border text-gray-900 text-sm border-none outline-none block w-full p-4 "
           />
           <SubmitButton />
+          <input
+            type="checkbox"
+            name="mintable"
+            checked={true}
+            className=" text-gray-900 text-sm border-none outline-none block p-4"
+          />
         </form>
 
         <div className="px-4">
