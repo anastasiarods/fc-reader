@@ -1,29 +1,5 @@
-import { kv } from "@vercel/kv";
 import { ImageResponse } from "@vercel/og";
-
-export async function getAvaliablePages(postId: string) {
-  try {
-    const pages = await kv.hkeys(`post_pages_${postId}`);
-    return pages as unknown as number[];
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
-}
-
-export async function getPageText(postId: string, pageId: number) {
-  try {
-    const text = (await kv.hget(
-      `post_pages_${postId}`,
-      pageId.toString()
-    )) as string;
-
-    return text;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-}
+import Image from "next/image";
 
 export async function generateTextImage(text: string) {
   const res = new ImageResponse(
@@ -98,7 +74,8 @@ export async function generatePostImage(data: any) {
             }}
           >
             {image && (
-              <img
+              <Image
+              alt=""
                 src={image}
                 style={{
                   minHeight: "100%",

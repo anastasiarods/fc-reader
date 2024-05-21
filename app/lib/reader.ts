@@ -6,12 +6,12 @@ import { v4 as uuidv4 } from "uuid";
 import { kv } from "@vercel/kv";
 import { z } from "zod";
 import isUrl from "is-url";
-import { BASE_URL } from "./constants";
+import { BASE_URL } from "../constants";
 import {
   getArticleDescription,
   getContentInChunks,
   getMetaTags,
-} from "./utils";
+} from "../utils";
 
 const schema = z.object({
   url: z.string().url(),
@@ -41,45 +41,11 @@ export async function getArticle(url: string) {
   };
 }
 
-export async function getPageText(postId: string, pageId: number) {
-  try {
-    const text = (await kv.hget(
-      `post_pages_${postId}`,
-      pageId.toString()
-    )) as string;
-
-    return text;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-}
-
-export async function getAvaliablePages(postId: string) {
-  try {
-    const pages = await kv.hkeys(`post_pages_${postId}`);
-    return pages as unknown as number[];
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
-}
-
-export async function getPostUrl(postId: string) {
-  try {
-    const url = await kv.get(`post_urls_${postId}`);
-    return url;
-  } catch (error) {
-    console.error(error);
-    return undefined;
-  }
-}
-
 export async function createPost(prevState: any, formData: FormData) {
   try {
     if (!formData) {
       return {
-        message: "URL is required",
+        error: "URL is required",
       };
     }
 
