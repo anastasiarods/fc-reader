@@ -25,18 +25,22 @@ app.frame("/create", async (c) => {
   let error = null;
   let uuid = null;
 
-  if (inputText) {
-    const validatedFields = schema.safeParse({
-      url: inputText,
-    });
+  try {
+    if (inputText) {
+      const validatedFields = schema.safeParse({
+        url: inputText,
+      });
 
-    if (!validatedFields.success || !isUrl(inputText)) {
-      error = "Invalid URL";
-    } else {
-      const { url } = validatedFields.data;
-      uuid = await newPost(url);
-      error = uuid ? null : "Invalid URL";
+      if (!validatedFields.success || !isUrl(inputText)) {
+        error = "Invalid URL";
+      } else {
+        const { url } = validatedFields.data;
+        uuid = await newPost(url);
+        error = uuid ? null : "Invalid URL";
+      }
     }
+  } catch (e) {
+    error = "Try another URL";
   }
 
   //If new link was created, return success message frame
@@ -53,7 +57,7 @@ app.frame("/create", async (c) => {
             <Heading>New FCReader Frame ✅</Heading>
             <Text color="text100" size="20">
               New frame was successfully created! You can share it using the
-              share button
+              Share button
             </Text>
           </VStack>
         </Box>
@@ -80,7 +84,7 @@ app.frame("/create", async (c) => {
           <Text color="text100" size="20">
             {error
               ? `Could't create a new frame. ${error || ""}`
-              : "Paste a URL in the input field to create a new frame"}
+              : "Paste a URL into the input field to create a new frame"}
           </Text>
         </VStack>
       </Box>
