@@ -1,4 +1,6 @@
 import { kv } from "@vercel/kv";
+import { MetaTags, PostDescription } from "./types";
+import { v4 as uuidv4 } from "uuid";
 
 export async function getAvaliablePages(postId: string) {
   try {
@@ -24,7 +26,7 @@ export async function getPageText(postId: string, pageId: number) {
   }
 }
 
-export async function getPostUrl(postId: string): Promise<string | undefined>{
+export async function getPostUrl(postId: string): Promise<string | undefined> {
   try {
     const url = await kv.get(`post_urls_${postId}`);
     return url as string;
@@ -32,4 +34,25 @@ export async function getPostUrl(postId: string): Promise<string | undefined>{
     console.error(error);
     return undefined;
   }
+}
+
+export async function newPost(
+  url: string,
+  description: PostDescription,
+  chunks: string[],
+  tags: MetaTags
+) {
+  const uuid = uuidv4();
+
+  await kv.set(`post_urls_${uuid}`, url);
+  await kv.hset(`post_pages_${uuid}`, {
+    0: JSON.stringify({ ...description, ...tags }),
+  });
+
+  //store chunks in KV
+  for (let i = 0; i < chunks.length; i++) {
+    await kv.hset(`post_pages_${uuid}`, { [i + 1]: chunks[i] });
+  }
+
+  return uuid;
 }

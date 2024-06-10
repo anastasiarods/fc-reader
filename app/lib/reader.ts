@@ -2,9 +2,6 @@
 
 import { Readability } from "@mozilla/readability";
 import { JSDOM } from "jsdom";
-import { v4 as uuidv4 } from "uuid";
-import { kv } from "@vercel/kv";
-import { z } from "zod";
 import isUrl from "is-url";
 import { BASE_URL } from "../constants";
 import {
@@ -12,10 +9,16 @@ import {
   getContentInChunks,
   getMetaTags,
 } from "../utils";
+import { schema } from "./types";
+import * as db from "./db";
 
-const schema = z.object({
-  url: z.string().url(),
-});
+export async function newPost(url: string) {
+  const { content, tags } = await getArticle(url);
+  const chunks = getContentInChunks(content?.textContent || "");
+  const description = getArticleDescription(content);
+  const uuid = await db.newPost(url, description, chunks, tags);
+  return uuid;
+}
 
 export async function getArticle(url: string) {
   const response = await fetch(url);
@@ -68,21 +71,7 @@ export async function createPost(prevState: any, formData: FormData) {
       };
     }
 
-    const uuid = uuidv4();
-    const { content, tags } = await getArticle(url);
-
-    const chunks = getContentInChunks(content?.textContent || "");
-    const description = getArticleDescription(content);
-
-    await kv.set(`post_urls_${uuid}`, url);
-    await kv.hset(`post_pages_${uuid}`, {
-      0: JSON.stringify({ ...description, ...tags }),
-    });
-
-    //store chunks in KV
-    for (let i = 0; i < chunks.length; i++) {
-      await kv.hset(`post_pages_${uuid}`, { [i + 1]: chunks[i] });
-    }
+    const uuid = await newPost(url);
 
     return {
       result: `${BASE_URL}/reader/${uuid}`,

@@ -1,14 +1,96 @@
 /** @jsxImportSource frog/jsx */
 
-import { BASE_URL } from "@/app/constants";
+import { ASPECT_RATIO, BASE_URL, IMG_HEIGHT, IMG_WIDTH } from "@/app/constants";
 import { Button, Frog } from "frog";
 import { devtools } from "frog/dev";
 import { handle } from "frog/next";
 import { serveStatic } from "frog/serve-static";
-import { getAvaliablePages, getPostUrl } from "@/app/lib/db";
+import { getAvaliablePages, getPageText, getPostUrl } from "@/app/lib/db";
+import { Box, vars, Text } from "@/app/lib/ui";
+import { newPost } from "@/app/lib/reader";
+import { schema } from "@/app/lib/types";
+import { Heading, VStack } from "@/app/lib/ui";
+import { TextInput } from "frog";
+import isUrl from "is-url";
+
+const shareLink = `https://warpcast.com/~/compose?embeds[]=${BASE_URL}/reader/`;
 
 const app = new Frog({
   basePath: "/api/reader",
+  ui: { vars },
+});
+
+app.frame("/create", async (c) => {
+  const { inputText } = c;
+  let error = null;
+  let uuid = null;
+
+  if (inputText) {
+    const validatedFields = schema.safeParse({
+      url: inputText,
+    });
+
+    if (!validatedFields.success || !isUrl(inputText)) {
+      error = "Invalid URL";
+    } else {
+      const { url } = validatedFields.data;
+      uuid = await newPost(url);
+      error = uuid ? null : "Invalid URL";
+    }
+  }
+
+  //If new link was created, return success message frame
+  if (uuid) {
+    return c.res({
+      image: (
+        <Box
+          grow
+          alignVertical="center"
+          backgroundColor="background200"
+          padding="32"
+        >
+          <VStack gap="4">
+            <Heading>New FCReader Frame ✅</Heading>
+            <Text color="text100" size="20">
+              New frame was successfully created! You can share it using the
+              share button
+            </Text>
+          </VStack>
+        </Box>
+      ),
+      intents: [
+        <Button.Link href={shareLink + uuid}>Share</Button.Link>,
+        <Button.Reset>Reset</Button.Reset>,
+      ],
+    });
+  }
+
+  return c.res({
+    image: (
+      <Box
+        grow
+        alignVertical="center"
+        backgroundColor="background200"
+        padding="32"
+      >
+        <VStack gap="4">
+          <Heading>
+            {error ? "New FCReader Frame ❌" : "New FCReader Frame 📖"}
+          </Heading>
+          <Text color="text100" size="20">
+            {error
+              ? `Could't create a new frame. ${error || ""}`
+              : "Paste a URL in the input field to create a new frame"}
+          </Text>
+        </VStack>
+      </Box>
+    ),
+    intents: [
+      <TextInput placeholder="Enter url..." />,
+      <Button value="submit">Submit</Button>,
+      <Button.Reset>Reset</Button.Reset>,
+    ],
+  });
 });
 
 app.frame("/:postId", async (c) => {
@@ -16,14 +98,16 @@ app.frame("/:postId", async (c) => {
   const ogUrl = (await getPostUrl(postId)) as string;
 
   return c.res({
-    action: `/${postId}/${1}`,
     image: `${BASE_URL}/api/images/${postId}/0.png`,
+    imageAspectRatio: ASPECT_RATIO,
     intents: [
-      <Button.Link href="https://fc-reader.vercel.app/">
+      <Button value="create" action={`/create`}>
         Create your Link
-      </Button.Link>,
+      </Button>,
       <Button.Link href={ogUrl}>Read Online</Button.Link>,
-      <Button value="read">Read Inline</Button>,
+      <Button action={`/${postId}/${1}`} value="read">
+        Read Inline
+      </Button>,
     ],
   });
 });
@@ -44,9 +128,26 @@ app.frame("/:postId/:pageId", async (c) => {
   const nextPage = pageIndex + 1;
   const prevPage = pageIndex - 1;
   const hasNext = pages.length > nextPage;
+  const text = await getPageText(postId, pageIndex);
 
   return c.res({
-    image: `${BASE_URL}/api/images/${postId}/${pageId}.png`,
+    image: (
+      <Box
+        grow
+        alignVertical="center"
+        backgroundColor="background200"
+        padding="24"
+      >
+        <Text color="text100" size="24" weight="300">
+          {text}
+        </Text>
+      </Box>
+    ),
+    imageOptions: {
+      width: IMG_WIDTH,
+      height: IMG_HEIGHT,
+    },
+    imageAspectRatio: ASPECT_RATIO,
     intents: [
       <Button
         value="<"

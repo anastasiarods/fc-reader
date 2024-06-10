@@ -1,5 +1,5 @@
+import { IMG_HEIGHT, IMG_WIDTH } from "@/app/constants";
 import { ImageResponse } from "@vercel/og";
-import Image from "next/image";
 
 export async function generateTextImage(text: string) {
   const res = new ImageResponse(
@@ -21,9 +21,8 @@ export async function generateTextImage(text: string) {
       </div>
     ),
     {
-      width: 600,
-      height: 400,
-      // fonts: [],
+      width: IMG_WIDTH,
+      height: IMG_HEIGHT,
     }
   );
 
@@ -32,7 +31,6 @@ export async function generateTextImage(text: string) {
 
 export async function generatePostImage(data: any) {
   let image = data?.twitterImage || data?.ogImage || "";
-  // const image = "";
   const title = data?.ogTitle || data?.title;
   const byLine = data?.byline;
 
@@ -74,9 +72,11 @@ export async function generatePostImage(data: any) {
             }}
           >
             {image && (
-              <Image
-              alt=""
+              <img
+                alt=""
                 src={image}
+                width={IMG_WIDTH}
+                height={IMG_HEIGHT}
                 style={{
                   minHeight: "100%",
                   minWidth: "100%",
@@ -127,9 +127,8 @@ export async function generatePostImage(data: any) {
       </div>
     ),
     {
-      width: 600,
-      height: 400,
-      // fonts: [],
+      width: IMG_WIDTH,
+      height: IMG_HEIGHT,
     }
   );
 
