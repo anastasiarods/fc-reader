@@ -114,14 +114,11 @@ app.frame("/:postId", async (c) => {
 
 app.frame("/:postId/:pageId", async (c) => {
   const { postId, pageId } = c.req.param();
-  const pageIndex = Number(pageId);
-  const buttonIndex = c.buttonIndex;
+  let pageIndex;
 
-  if (!buttonIndex) {
-    return c.error({
-      message: "Invalid Button Index",
-    });
-  }
+  // if pageId is 0, it means the user is trying to access
+  // the page from the old frames
+  pageIndex = pageId === "0" ? 1 : Number(pageId);
 
   const ogUrl = (await getPostUrl(postId)) as string;
   const pages = await getAvaliablePages(postId);
