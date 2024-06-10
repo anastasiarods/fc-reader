@@ -1,16 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { createPost } from "./reader";
-// @ts-ignore
+import { createPost } from "./lib/reader";
 import { useFormState, useFormStatus } from "react-dom";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 const initialState = {
-  error: null,
-  result: "",
+  error: "",
+  result: undefined,
 };
 
 const LinkButton: React.FC<{ text: string }> = ({ text }) => {
@@ -70,7 +69,6 @@ const LinkButton: React.FC<{ text: string }> = ({ text }) => {
 function SubmitButton() {
   const { pending } = useFormStatus();
 
-  console.log("pending", pending);
   return (
     <button
       type="submit"

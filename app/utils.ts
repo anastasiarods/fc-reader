@@ -1,4 +1,5 @@
 import { JSDOM } from "jsdom";
+import { MetaTags, PostDescription } from "./lib/types";
 
 export interface fcButton {
   label: string;
@@ -49,7 +50,7 @@ export function getFrameHtmlHead(
   return tags.join("");
 }
 
-export function getMetaTags(doc: JSDOM){
+export function getMetaTags(doc: JSDOM): MetaTags{
   //@ts-ignore
   const ogImage = doc.window.document.querySelector('meta[property="og:image"]')?.content;
   //@ts-ignore
@@ -107,7 +108,7 @@ export function commbineSentencesIntoChunks(
   return chunks;
 }
 
-export function getArticleDescription(article: any) {
+export function getArticleDescription(article: any): PostDescription {
   const description = {
     title: article?.title || "",
     byline: article?.byline || "",

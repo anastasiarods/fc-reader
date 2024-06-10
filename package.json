@@ -12,27 +12,29 @@
     "@mozilla/readability": "^0.5.0",
     "@vercel/kv": "^1.0.1",
     "@vercel/og": "^0.6.2",
+    "frog": "^0.11.2",
+    "hono": "^4.3.8",
     "is-url": "^1.2.4",
     "jsdom": "^24.0.0",
     "next": "14.1.0",
-    "react": "^18",
-    "react-dom": "^18",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "satori": "^0.10.13",
     "uuid": "^9.0.1",
-    "zod": "^3.22.4"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/is-url": "^1.2.32",
     "@types/jsdom": "^21.1.6",
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/node": "^20.12.12",
+    "@types/react": "^18.3.2",
+    "@types/react-dom": "^18.3.0",
     "@types/uuid": "^9.0.8",
-    "autoprefixer": "^10.0.1",
-    "eslint": "^8",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^8.57.0",
     "eslint-config-next": "14.1.0",
-    "postcss": "^8",
-    "tailwindcss": "^3.3.0",
-    "typescript": "^5"
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.3",
+    "typescript": "^5.4.5"
   }
 }

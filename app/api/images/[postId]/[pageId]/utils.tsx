@@ -1,29 +1,5 @@
-import { kv } from "@vercel/kv";
+import { IMG_HEIGHT, IMG_WIDTH } from "@/app/constants";
 import { ImageResponse } from "@vercel/og";
-
-export async function getAvaliablePages(postId: string) {
-  try {
-    const pages = await kv.hkeys(`post_pages_${postId}`);
-    return pages as unknown as number[];
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
-}
-
-export async function getPageText(postId: string, pageId: number) {
-  try {
-    const text = (await kv.hget(
-      `post_pages_${postId}`,
-      pageId.toString()
-    )) as string;
-
-    return text;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-}
 
 export async function generateTextImage(text: string) {
   const res = new ImageResponse(
@@ -45,9 +21,8 @@ export async function generateTextImage(text: string) {
       </div>
     ),
     {
-      width: 600,
-      height: 400,
-      // fonts: [],
+      width: IMG_WIDTH,
+      height: IMG_HEIGHT,
     }
   );
 
@@ -56,7 +31,6 @@ export async function generateTextImage(text: string) {
 
 export async function generatePostImage(data: any) {
   let image = data?.twitterImage || data?.ogImage || "";
-  // const image = "";
   const title = data?.ogTitle || data?.title;
   const byLine = data?.byline;
 
@@ -99,7 +73,10 @@ export async function generatePostImage(data: any) {
           >
             {image && (
               <img
+                alt=""
                 src={image}
+                width={IMG_WIDTH}
+                height={IMG_HEIGHT}
                 style={{
                   minHeight: "100%",
                   minWidth: "100%",
@@ -150,9 +127,8 @@ export async function generatePostImage(data: any) {
       </div>
     ),
     {
-      width: 600,
-      height: 400,
-      // fonts: [],
+      width: IMG_WIDTH,
+      height: IMG_HEIGHT,
     }
   );
 

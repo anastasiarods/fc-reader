@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  generatePostImage,
-  generateTextImage,
-  getAvaliablePages,
-  getPageText,
-} from "./utils";
+import { generatePostImage, generateTextImage } from "./utils";
+import { getAvaliablePages, getPageText } from "@/app/lib/db";
 
 // export const dynamic = "force-dynamic";
 // export const revalidate = 0;

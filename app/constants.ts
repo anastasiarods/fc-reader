@@ -1,12 +1,8 @@
-export const BASE_URL = "https://fc-reader.vercel.app";
+export const BASE_URL =
+  process.env.VERCEL_ENV === "development"
+    ? "http://localhost:3000"
+    : "https://fc-reader.vercel.app";
 
-export const startButtons = [
-  { label: "Create your link", action: "link", target: "https://fc-reader.vercel.app/" },
-  { label: "Read Online", action: "link" },
-  { label: "Read Inline" },
-];
-export const readButtons = [
-  { label: "<" },
-  { label: "Read Online", action: "link" },
-  { label: ">" },
-];
+export const ASPECT_RATIO = "1.91:1";
+export const IMG_WIDTH = 600;
+export const IMG_HEIGHT = 400;
