@@ -1,4 +1,6 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Farcaster Frame example
+
+[https://warpcast.com/nastya/0xb1551a15](https://warpcast.com/nastya/0xb1551a15)
 
 ## Getting Started
 
